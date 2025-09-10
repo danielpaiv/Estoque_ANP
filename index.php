@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -100,16 +102,16 @@
     <h1>BEM VINDO AO SISTEMA</h1>
     <p>ACESSE O SISTEMA COM USUÁRIO E SENHA</p>
 
-    <form>
+    <form action="teste_login.php" method="post">
       <div style="width: 100%;">
         <label for="usuario">🤵</label>
-        <input type="text" id="usuario" name="usuario" required placeholder="Digite seu usuário" autofocus>
+        <input type="text" id="nome" name="nome" required placeholder="Digite seu usuário" autofocus>
       </div>
       <div style="width: 100%;">
         <label for="senha">🔒</label>
         <input type="password" id="senha" name="senha" required placeholder="Digite sua senha">
       </div>
-      <input type="submit" value="ENTRAR">
+      <input type="submit" name="submit" value="Enviar">
     </form>
   </div>
 </body>

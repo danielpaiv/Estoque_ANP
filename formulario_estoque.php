@@ -1,25 +1,43 @@
 <?php
-// Configurações do banco de dados
-$servername = "localhost"; // Ou o IP do servidor
-$username = "root"; // Usuário do MySQL
-$password = ""; // Senha do MySQL
-$dbname = "estoque_anp"; // Nome do banco de dados
+   session_start();
+        include_once('conexao.php');
+        
+         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+        unset($_SESSION['nome']);
+        unset($_SESSION['senha']);
+        header('Location: index.php');
+        exit();  // Importante adicionar o exit() após o redirecionamento
+    }
 
-// Criar conexão
-$conn = new mysqli($servername, $username, $password, $dbname);
+     //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
+    // Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
+    if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+        unset($_SESSION['nome']);
+        unset($_SESSION['senha']);
+        header('Location: index.php');
+        exit();  // Importante adicionar o exit() após o redirecionamento
+    }
+  // Configurações do banco de dados
+  /*$servername = "localhost"; // Ou o IP do servidor
+  $username = "root"; // Usuário do MySQL
+  $password = ""; // Senha do MySQL
+  $dbname = "estoque_anp"; // Nome do banco de dados*/
 
-// Verificar conexão
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+  // Criar conexão
+  $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Consultar os produtos no estoque
-$sql_produtos = "SELECT id, produto FROM produtos";
-$result_produtos = $conn->query($sql_produtos);
+  // Verificar conexão
+  if ($conn->connect_error) {
+      die("Falha na conexão: " . $conn->connect_error);
+  }
 
-// Consultar os postos na tabela postos
-$sql_postos = "SELECT id, posto FROM postos";
-$result_postos = $conn->query($sql_postos);
+  // Consultar os produtos no estoque
+  $sql_produtos = "SELECT id, produto FROM produtos";
+  $result_produtos = $conn->query($sql_produtos);
+
+  // Consultar os postos na tabela postos
+  $sql_postos = "SELECT id, posto FROM postos";
+  $result_postos = $conn->query($sql_postos);
 ?>
 
 <!DOCTYPE html>
@@ -193,8 +211,9 @@ $result_postos = $conn->query($sql_postos);
     <div class="faixa-inclinada"></div>
   
     <h1>Cadastro de Estoque</h1>
-    
+    <button onclick="window.location.href='sair.php'">Sair</button>
     <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
+    <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
     <button onclick="window.location.href='entradas.php'">Entradas</button>
   
 

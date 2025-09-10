@@ -1,10 +1,28 @@
 <?php
-    // Configurações do banco de dados
-    $servername = "localhost"; // Ou o IP do servidor
-    $username = "root"; // Usuário do MySQL
-    $password = ""; // Senha do MySQL
-    $dbname = "estoque_anp"; // Nome do banco de dados
+        session_start();
+        include_once('conexao.php');
+        
+         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+          unset($_SESSION['nome']);
+          unset($_SESSION['senha']);
+          header('Location: index.php');
+          exit();  // Importante adicionar o exit() após o redirecionamento
+        }
 
+          //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
+          // Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
+        if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+          unset($_SESSION['nome']);
+          unset($_SESSION['senha']);
+          header('Location: index.php');
+          exit();  // Importante adicionar o exit() após o redirecionamento
+        }
+    /* Configurações do banco de dados
+        $servername = "localhost"; // Ou o IP do servidor
+        $username = "root"; // Usuário do MySQL
+        $password = ""; // Senha do MySQL
+        $dbname = "estoque_anp"; // Nome do banco de dados
+    */
     // Criar conexão
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -12,6 +30,8 @@
     if ($conn->connect_error) {
         die("Falha na conexão: " . $conn->connect_error);
     }
+
+    
 
     // Consultar os produtos no estoque
     $sql_produtos = "SELECT id, produto FROM produtos";
@@ -190,8 +210,9 @@
         <h1>Entradas de Combustiveis</h1>
 
      <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
-     <button onclick="window.location.href='formulario_estoque.php'">Adicionar Estoque</button>
      <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
+     <button onclick="window.location.href='formulario_estoque.php'">Adicionar Estoque</button>
+     
 
     <form  action="salvar_entradas.php"  method="POST" >
 
