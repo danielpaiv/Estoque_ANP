@@ -1,5 +1,24 @@
+<?php       
+       /*Configurações do banco de dados*/
+        $servername = "localhost"; // Ou o IP do servidor
+        $username = "root"; // Usuário do MySQL
+        $password = ""; // Senha do MySQL
+        $dbname = "estoque_anp"; // Nome do banco de dados
+    
+    // Criar conexão
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
+    // Verificar conexão
+    if ($conn->connect_error) {
+        die("Falha na conexão: " . $conn->connect_error);
+    }
 
+    
+
+    // Consultar os produtos no estoque
+    $sql_usuarios = "SELECT id, nome FROM usuarios";
+    $result_usuarios = $conn->query($sql_usuarios);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -93,6 +112,22 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    select {
+      width: 80%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: linear-gradient(to right, #b0f5ff, #55d4ff);
+      color: #000;
+      cursor: pointer;
+    }
+    select:hover {
+      background: linear-gradient(to right, #55d4ff, #b0f5ff);
+    }
+    #data_entrada:hover {
+      background: #218838;
+    }
   </style>
 </head>
 <body>
@@ -105,7 +140,18 @@
     <form action="teste_login.php" method="post">
       <div style="width: 100%;">
         <label for="usuario">🤵</label>
-        <input type="text" id="nome" name="nome" required placeholder="Digite seu usuário" autofocus>
+        <select  id="nome" class="nome" name="nome" required autofocus>
+                  <option value="">Selecione</option>
+                  <?php
+                  if ($result_usuarios && $result_usuarios->num_rows > 0) {
+                      while($row = $result_usuarios->fetch_assoc()) {
+                          echo "<option value='" . $row['nome'] . "'>" . $row['nome'] . "</option>";
+                      }
+                  } else {
+                      echo "<option value=''>Nenhum usuário encontrado</option>";
+                  }
+                  ?>
+        </select>
       </div>
       <div style="width: 100%;">
         <label for="senha">🔒</label>
