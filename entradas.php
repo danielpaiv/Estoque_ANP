@@ -208,7 +208,7 @@
 <body>
      <div class="faixa-inclinada"></div>
         <h1>Entradas de Combustiveis</h1>
-
+      <button onclick="window.location.href='sair.php'">Sair</button>
      <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
      <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
      <button onclick="window.location.href='formulario_estoque.php'">Adicionar Estoque</button>
