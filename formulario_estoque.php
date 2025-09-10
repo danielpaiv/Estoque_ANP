@@ -89,6 +89,15 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    .submit{
+      margin-top: 0px;
+      padding: 10px 15px;
+      border: none;
+      background: #007BFF;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     button:hover {
       background: #0056b3;
     }
@@ -214,8 +223,8 @@
     <button onclick="window.location.href='sair.php'">Sair</button>
     <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
     <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
-    <button onclick="window.location.href='entradas.php'">Entradas</button>
-  
+    <button onclick="window.location.href='formulario_entradas.php'">Entradas</button>
+
 
   <form  action="salvar_estoque.php"  method="POST" >
 
@@ -256,8 +265,25 @@
     <label for="data_venda">DATA:</label>
     <input type="date" id="data_venda" name="data_venda" required>
 
-    <button type="submit">Cadastrar</button>
+    <input class="submit" type="submit" value="Cadastrar">
   </form>
+    <script>
+      // Captura todos os elementos de input, select e textarea
+      const inputs = document.querySelectorAll("input, select, textarea");
 
+      inputs.forEach((el, index) => {
+        el.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault(); // Impede o envio do form
+            const next = inputs[index + 1];
+            if (next) {
+              next.focus(); // Foca no próximo campo
+            } else {
+              document.querySelector("input[type=submit]").click(); // Se for o último, envia
+            }
+          }
+        });
+      });
+    </script>
 </body>
 </html>

@@ -24,23 +24,23 @@ session_start();
                 $dbname = "estoque_anp";
             */
 
-    // Conectar ao MySQL
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-        die("Falha na conexão: " . $conn->connect_error);
-    }
+            // Conectar ao MySQL
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            if ($conn->connect_error) {
+                die("Falha na conexão: " . $conn->connect_error);
+            }
 
-    // Consultar todos os produtos
-    $sql = "SELECT * FROM estoque ORDER BY id DESC";
-    $result = $conn->query($sql);
+            // Consultar todos os produtos
+            $sql = "SELECT * FROM estoque ORDER BY id DESC";
+            $result = $conn->query($sql);
 
-    // Consultar os produtos no estoque
-    $sql_produtos = "SELECT id, produto FROM produtos";
-    $result_produtos = $conn->query($sql_produtos);
+            // Consultar os produtos no estoque
+            $sql_produtos = "SELECT id, produto FROM produtos";
+            $result_produtos = $conn->query($sql_produtos);
 
-    // Consultar os postos no estoque
-    $sql_postos = "SELECT id, posto FROM postos";
-    $result_postos = $conn->query($sql_postos);
+            // Consultar os postos no estoque
+            $sql_postos = "SELECT id, posto FROM postos";
+            $result_postos = $conn->query($sql_postos);
 
 
 ?>

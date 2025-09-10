@@ -5,19 +5,19 @@
         $password = ""; // Senha do MySQL
         $dbname = "estoque_anp"; // Nome do banco de dados
     
-    // Criar conexão
-    $conn = new mysqli($servername, $username, $password, $dbname);
+        // Criar conexão
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Verificar conexão
-    if ($conn->connect_error) {
-        die("Falha na conexão: " . $conn->connect_error);
-    }
+        // Verificar conexão
+        if ($conn->connect_error) {
+            die("Falha na conexão: " . $conn->connect_error);
+        }
 
-    
+        
 
-    // Consultar os produtos no estoque
-    $sql_usuarios = "SELECT id, nome FROM usuarios";
-    $result_usuarios = $conn->query($sql_usuarios);
+        // Consultar os produtos no estoque
+        $sql_usuarios = "SELECT id, nome FROM usuarios";
+        $result_usuarios = $conn->query($sql_usuarios);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -160,5 +160,23 @@
       <input type="submit" name="submit" value="Enviar">
     </form>
   </div>
+    <script>
+      // Captura todos os elementos de input, select e textarea
+      const inputs = document.querySelectorAll("input, select, textarea");
+
+      inputs.forEach((el, index) => {
+        el.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault(); // Impede o envio do form
+            const next = inputs[index + 1];
+            if (next) {
+              next.focus(); // Foca no próximo campo
+            } else {
+              document.querySelector("input[type=submit]").click(); // Se for o último, envia
+            }
+          }
+        });
+      });
+  </script>
 </body>
 </html>   

@@ -170,7 +170,7 @@
      <header>
         <h1>Listar entradas</h1>
 
-        <button onclick="window.location.href='entradas.php'">Voltar</button>
+        <button onclick="window.location.href='formulario_entradas.php'">Voltar</button>
 
         <label for="dataFiltro">Filtrar por Data:</label>
         <input type="date" id="dataFiltro" oninput="filtrarData()">
