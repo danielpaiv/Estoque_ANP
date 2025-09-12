@@ -219,7 +219,7 @@
 <body>
     <div class="faixa-inclinada"></div>
   
-    <h1>Cadastro de Estoque</h1>
+    <h1>CADASTRO DE ESTOQUE</h1>
     <button onclick="window.location.href='sair.php'">Sair</button>
     <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
     <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
@@ -262,8 +262,8 @@
     <label for="fisico">Estoque Físico:</label>
     <input type="number" id="fisico" name="estoque_fisico" required>
 
-    <label for="data_venda">DATA:</label>
-    <input type="date" id="data_venda" name="data_venda" required>
+    <label for="data_venda">DATA:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
+    <input type="date" id="data_venda" name="data_venda" value="<?php echo date('Y-m-d'); ?>" required>
 
     <input class="submit" type="submit" value="Cadastrar">
   </form>
