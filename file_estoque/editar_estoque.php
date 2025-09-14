@@ -12,35 +12,37 @@
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           $posto = $_POST['posto'];
           $produto = $_POST['produto'];
-          $quantidade = $_POST['quantidade'];
-          $data_entrada = $_POST['data_entrada'];
+          $estoque_sistema = $_POST['estoque_sistema'];
+          $estoque_fisico = $_POST['estoque_fisico'];
+          $data_venda = $_POST['data_venda'];
 
-          $stmt = $conn->prepare("UPDATE entradas SET posto=?, produto=?, quantidade=?, data_entrada=? WHERE id=?");
-          $stmt->bind_param("ssisi", $posto, $produto, $quantidade, $data_entrada, $id);
+          $stmt = $conn->prepare("UPDATE estoque SET posto=?, produto=?, estoque_sistema=?, estoque_fisico=?, data_venda=? WHERE id=?");
+          $stmt->bind_param("ssiisi", $posto, $produto, $estoque_sistema, $estoque_fisico, $data_venda, $id);
           $stmt->execute();
           $stmt->close();
 
-          header("Location: listar_entradas.php");
+          header("Location: listar_estoque.php");
           exit;
       }
 
       // Buscar dados atuais
-          $result = $conn->query("SELECT * FROM entradas WHERE id=$id");
-          $produto = $quantidade = "";
+      $result = $conn->query("SELECT * FROM estoque WHERE id=$id");
+      $produto = $estoque_sistema = $estoque_fisico = $data_venda = "";
       if ($row = $result->fetch_assoc()) {
           $posto = $row['posto'];
           $produto = $row['produto'];
-          $quantidade = $row['quantidade'];
-          $data_entrada = $row['data_entrada'];
+          $estoque_sistema = $row['estoque_sistema'];
+          $estoque_fisico = $row['estoque_fisico'];
+          $data_venda = $row['data_venda'];
       }
-
-      // Consultar os postos na tabela postos
-      $sql_postos = "SELECT id, posto FROM postos";
-      $result_postos = $conn->query($sql_postos);
 
       // Consultar os produtos no estoque
       $sql_produtos = "SELECT id, produto FROM produtos";
       $result_produtos = $conn->query($sql_produtos);
+
+      // Consultar os postos na tabela postos
+      $sql_postos = "SELECT id, posto FROM postos";
+      $result_postos = $conn->query($sql_postos);
 
       $conn->close();
 ?>
@@ -49,16 +51,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>EDITAR PRODUTO</title>
+<title>EDITAR ESTOQUE - ANP</title>
 <style>
   body {
     background: linear-gradient(to bottom, #0a1b7e, #0080ff);
     font-family: Arial, sans-serif; 
     margin: 40px; }
   form { 
+    background: #fff;
     max-width: 400px; 
     margin: 0 auto; 
-    background: #fff; 
+    margin-top: -0%;
     padding: 20px; 
     border-radius: 10px; }
   label { 
@@ -126,6 +129,7 @@
       color: white;
       text-align: center;
       margin-bottom: 20px;
+      margin-top: -20px;
     }
     select {
       width: 80%;
@@ -139,6 +143,7 @@
     select:hover {
       background: #218838;
     }
+
     /* Mudança de cor conforme a opção selecionada */
     .filtro-servicos:has(option:checked[value="GASOLINA COMUM"]) {
       background-color: #d32f2f;  /* vermelho */
@@ -173,18 +178,44 @@
     .filtro-servicos option[value="GASOLINA DURA MAIS"] { background-color: #bbdefb; }
     .filtro-servicos option[value="ETANOL"] { background-color: #c8e6c9; }
     .filtro-servicos option[value="DIESEL S10"] { background-color: #e0e0e0; }
+     /* Mudança de cor conforme o valor do input produto */
+  #form-control[value="GASOLINA COMUM"] {
+      background-color: #d32f2f;  /* vermelho */
+      color: #fff;
+      border-color: #b71c1c;
+  }
+
+  #form-control[value="GASOLINA DURA MAIS"] {
+      background-color: #1565c0;  /* azul */
+      color: #fff;
+      border-color: #0d47a1;
+  }
+
+  #form-control[value="ETANOL"] {
+      background-color: #2e7d32;  /* verde */
+      color: #fff;
+      border-color: #1b5e20;
+  }
+
+  #form-control[value="DIESEL S10"] {
+      background-color: #424242;  /* cinza escuro */
+      color: #fff;
+      border-color: #212121;
+  }
 </style>
 </head>
 <body>
 <div class="faixa-inclinada"></div>
+<button onclick="window.location.href='listar_estoque.php'">Voltar</button>
 
-<center><h1>EDITAR PRODUTO</h1></center>
+<center><h1>EDITAR ESTOQUE - ANP</h1></center>
+
 
 <form method="POST">
 
   <label>Posto:</label>
-  <select name="posto" class="form-control" value="<?= htmlspecialchars($posto) ?>" required autofocus>
-    <option value=""><?= htmlspecialchars($posto) ?></option>
+  <select name="posto" class="filtro-servicos" value="<?= htmlspecialchars($posto) ?>" required readonly autofocus>
+    <option value="<?= $posto ?>"><?= $posto ?></option readonly>
           <?php
           if ($result_postos && $result_postos->num_rows > 0) {
               while($row = $result_postos->fetch_assoc()) {
@@ -195,7 +226,8 @@
           }
           ?>
   </select>
-   <label>Produto:</label>
+
+  <label>Produto:</label>
    <select  id="form-control" class="filtro-servicos" name="produto" required >
           <option value=""><?=$produto?></option>
           <?php
@@ -209,15 +241,19 @@
           ?>
       </select>
 
-  <label>Quantidade:</label>
-  <input type="number" name="quantidade" value="<?= $quantidade ?>" required>
+  <label>Estoque do Sistema:</label>
+  <input type="number" name="estoque_sistema" value="<?= $estoque_sistema ?>" required>
+
+  <label>Estoque Físico:</label>
+  <input type="number" name="estoque_fisico" value="<?= $estoque_fisico ?>" required>
 
   <label>Data:</label>
-  <input type="date" name="data_entrada" value="<?= $data_entrada ?>" required>
+  <input type="date" name="data_venda" value="<?= $data_venda ?>" required>
 
   <button type="submit" onclick="return confirm('Produto alterado com sucesso!')">Salvar Alterações</button>
 </form>
-      <script>
+
+    <script>
       // Captura todos os elementos de input, select e textarea
       const inputs = document.querySelectorAll("input, select, textarea");
 
@@ -236,6 +272,7 @@
           }
         });
       });
-    </script>    
+    </script>
+
 </body>
 </html>

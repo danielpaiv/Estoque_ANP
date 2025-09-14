@@ -10,13 +10,14 @@
     }
 
      //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
-    // Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
+    /* Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
     if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
         unset($_SESSION['nome']);
         unset($_SESSION['senha']);
         header('Location: index.php');
         exit();  // Importante adicionar o exit() após o redirecionamento
     }
+        */
   // Configurações do banco de dados
   /*$servername = "localhost"; // Ou o IP do servidor
   $username = "root"; // Usuário do MySQL
@@ -44,7 +45,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>CADASTRO ESTOQUE</title>
+  <title>CADASTRO ESTOQUE - ANP</title>
   <style>
     body {
       background: linear-gradient(to bottom, #0a1b7e, #0080ff);
@@ -55,6 +56,7 @@
     }
     h1 {
       text-align: center;
+      top:-20px;
     }
     form {
       background: #a1a1a1ff;
@@ -219,11 +221,11 @@
 <body>
     <div class="faixa-inclinada"></div>
   
-    <h1>CADASTRO DE ESTOQUE</h1>
-    <button onclick="window.location.href='sair.php'">Sair</button>
-    <button onclick="window.location.href='listar_estoque.php'">Listar Estoque</button>
-    <button onclick="window.location.href='listar_entradas.php'">Listar Entradas</button>
-    <button onclick="window.location.href='formulario_entradas.php'">Entradas</button>
+    <h1>CADASTRO DE ESTOQUE - ANP</h1>
+    <button onclick="window.location.href='sair.php'">Sair ↩</button>
+    <button onclick="window.location.href='listar_estoque.php'">Estoque</button>
+    <!--<button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_entradas.php/listar_entradas.php'">Listar Entradas</button>-->
+    <button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_entradas.php/listar_entradas.php'">Entradas</button>
 
 
   <form  action="salvar_estoque.php"  method="POST" >

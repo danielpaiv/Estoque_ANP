@@ -10,13 +10,14 @@
         }
 
           //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
-          // Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
+      /* Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
           unset($_SESSION['nome']);
           unset($_SESSION['senha']);
           header('Location: index.php');
           exit();  // Importante adicionar o exit() após o redirecionamento
         }
+      */
     /* Configurações do banco de dados
         $servername = "localhost"; // Ou o IP do servidor
         $username = "root"; // Usuário do MySQL
@@ -48,7 +49,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CADASTRO ENTRADAS</title>
+    <title>CADASTRO ENTRADAS - ANP</title>
 </head>
   <style>
     body {
@@ -209,75 +210,78 @@
       position: absolute;/* Coloca a faixa atrás do conteúdo principal */
       background-color: #0038a0;
       clip-path: polygon(0 25%, 100% 0%, 100% 100%, 0% 100%);/* Inclinada para baixo */
-      transform: skewY(-10deg);/* Inclinada para baixo */
+      transform: skewY(-8deg);/* Inclinada para baixo */
       transform-origin: bottom left;/* Ajusta a origem da transformação */
       z-index: 0;/* Coloca atrás do conteúdo principal */
     }
   </style>
-<body>
-     <div class="faixa-inclinada"></div>
-        <h1>CADASTRO DE ENTRADAS</h1>
+    <body>
+      <div class="faixa-inclinada"></div>
+      <h1>CADASTRO DE ENTRADAS - ANP</h1>
+
       <button onclick="window.location.href='sair.php'">Sair ↩</button>
-     <button onclick="window.location.href='listar_estoque.php'">Listar Estoque </button>
-     <button onclick="window.location.href='listar_entradas.php'">Listar Entradas </button>
-     <button onclick="window.location.href='formulario_estoque.php'">Adicionar Estoque </button>
-     
+      <button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_estoque/listar_estoque.php'">Estoque </button>
+      <button onclick="window.location.href='listar_entradas.php'">Entradas </button>
+     <!--<button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_estoque/formulario_estoque.php'">Adicionar Estoque </button>-->
 
-    <form  action="salvar_entradas.php"  method="POST" >
 
-      <label for="posto">Posto:</label>
-    <select  id="posto" class="posto" name="posto" required autofocus>
-          <option value="">Selecione</option>
-          <?php
-          if ($result_postos && $result_postos->num_rows > 0) {
-              while($row = $result_postos->fetch_assoc()) {
-                  echo "<option value='" . $row['posto'] . "'>" . $row['posto'] . "</option>";
-              }
-          } else {
-              echo "<option value=''>Nenhum posto encontrado</option>";
-          }
-          ?>
-      </select>
+      <form  action="salvar_entradas.php"  method="POST" >
 
-      <label for="produto">Produto:</label>
-        <select  id="produto" class="filtro-servicos" name="produto" required autofocus>
+          <label for="posto">Posto:</label>
+          <select  id="posto" class="posto" name="posto" required autofocus>
             <option value="">Selecione</option>
-            <?php
-            if ($result_produtos && $result_produtos->num_rows > 0) {
-                while($row = $result_produtos->fetch_assoc()) {
-                    echo "<option value='" . $row['produto'] . "'>" . $row['produto'] . "</option>";
+              <?php
+                if ($result_postos && $result_postos->num_rows > 0) {
+                  while($row = $result_postos->fetch_assoc()) {
+                    echo "<option value='" . $row['posto'] . "'>" . $row['posto'] . "</option>";
+                  }
+                } 
+                else {
+                  echo "<option value=''>Nenhum posto encontrado</option>";
                 }
-            } else {
-                echo "<option value=''>Nenhum produto encontrado</option>";
+              ?>
+          </select>
+
+          <label for="produto">Produto:</label>
+            <select  id="produto" class="filtro-servicos" name="produto" required autofocus>
+              <option value="">Selecione</option>
+                <?php
+                  if ($result_produtos && $result_produtos->num_rows > 0) {
+                    while($row = $result_produtos->fetch_assoc()) {
+                        echo "<option value='" . $row['produto'] . "'>" . $row['produto'] . "</option>";
+                    }
+                  } 
+                  else {
+                    echo "<option value=''>Nenhum produto encontrado</option>";
+                  }
+                ?>
+                </select>
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade" name="quantidade" required>
+
+            <label for="data_entrada">Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
+            <input type="date" id="data_entrada" name="data_entrada" value="<?php echo date('Y-m-d'); ?>" required>
+
+            <input class="submit" type="submit" value="Enviar">
+      </form>
+
+      <script>
+        // Captura todos os elementos de input, select e textarea
+        const inputs = document.querySelectorAll("input, select, textarea");
+
+        inputs.forEach((el, index) => {
+          el.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault(); // Impede o envio do form
+              const next = inputs[index + 1];
+              if (next) {
+                next.focus(); // Foca no próximo campo
+              } else {
+                document.querySelector("input[type=submit]").click(); // Se for o último, envia
+              }
             }
-            ?>
-            </select>
-        <label for="quantidade">Quantidade:</label>
-        <input type="number" id="quantidade" name="quantidade" required>
-
-        <label for="data_entrada">Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
-        <input type="date" id="data_entrada" name="data_entrada" value="<?php echo date('Y-m-d'); ?>" required>
-
-        <input class="submit" type="submit" value="Enviar">
-    </form>
-
-    <script>
-      // Captura todos os elementos de input, select e textarea
-      const inputs = document.querySelectorAll("input, select, textarea");
-
-      inputs.forEach((el, index) => {
-        el.addEventListener("keydown", function (e) {
-          if (e.key === "Enter") {
-            e.preventDefault(); // Impede o envio do form
-            const next = inputs[index + 1];
-            if (next) {
-              next.focus(); // Foca no próximo campo
-            } else {
-              document.querySelector("input[type=submit]").click(); // Se for o último, envia
-            }
-          }
+          });
         });
-      });
-  </script>
-</body>
+      </script>
+    </body>
 </html>
