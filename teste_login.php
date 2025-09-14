@@ -20,7 +20,7 @@
             header('Location: index.php');
         } else {
             $user_data = $result->fetch_assoc();
-            //$_SESSION['user_id'] = $user_data['id']; // Armazena o user_id na sessão
+            $_SESSION['user_id'] = $user_data['id']; // Armazena o user_id na sessão
             $_SESSION['nome'] = $user_data['nome'];
             $_SESSION['senha'] = $user_data['senha'];
             header('Location: http://localhost/controle_combustivel/estoque_ANP/file_estoque/listar_estoque.php');// Redirect to produtos.php
