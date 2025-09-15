@@ -1,19 +1,21 @@
 <?php
-// Configurações do banco de dados
-$servername = "localhost"; // Ou o IP do servidor
-$username = "root"; // Usuário do MySQL
-$password = ""; // Senha do MySQL
-$dbname = "estoque_anp"; // Nome do banco de dados
+  session_start();
+     include_once('conexao.php');
+        
+    if (!isset($_SESSION['nome']) || !isset($_SESSION['senha']) || !isset($_SESSION['user_id'])) {
+      unset($_SESSION['nome']);
+      unset($_SESSION['senha']);
+      unset($_SESSION['user_id']);
+      header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
+      exit();  // Importante adicionar o exit() após o redirecionamento
+    }
+    $user_id = $_SESSION['user_id']; // Recupera o user_id da sessão
 
-// Conectar ao MySQL
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexão
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+      $nome = $_SESSION['nome'];
+      $user_id = $_SESSION['user_id'];
 
 // Receber os dados do formulário
+
 $posto = $_POST['posto'];
 $produto = $_POST['produto'];
 $estoque_sistema = $_POST['estoque_sistema'];
@@ -21,11 +23,11 @@ $estoque_fisico = $_POST['estoque_fisico'];
 $data_venda = $_POST['data_venda'];
 
 // Preparar e executar a inserção
-$sql = "INSERT INTO estoque (posto, produto, estoque_sistema, estoque_fisico, data_venda)
-        VALUES (?, ?, ?, ?, ?)";
+$sql = "INSERT INTO estoque (nome, user_id, posto, produto, estoque_sistema, estoque_fisico, data_venda)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssiis", $posto, $produto, $estoque_sistema, $estoque_fisico, $data_venda);
+$stmt->bind_param("sisssss", $nome, $user_id, $posto, $produto, $estoque_sistema, $estoque_fisico, $data_venda);
 
 if ($stmt->execute()) {
     echo "Produto cadastrado com sucesso!";

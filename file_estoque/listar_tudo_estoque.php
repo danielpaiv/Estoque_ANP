@@ -13,15 +13,6 @@
             $nome = $_SESSION['nome'];
             $user_id = $_SESSION['user_id'];
 
-             // Consultar as entradas realizadas no dia atual para o usuário logado
-            $sql_estoque = "SELECT * FROM estoque WHERE user_id = ? ORDER BY id DESC";
-            $stmt = $conn->prepare($sql_estoque);
-            //$data_atual = date('Y-m-d');        // data atual no formato YYYY-MM-DD
-            
-            $stmt->bind_param('i', $user_id); 
-            $stmt->execute();
-            $result_estoque = $stmt->get_result();
-
             // Conectar ao MySQL
             $conn = new mysqli($servername, $username, $password, $dbname);
             if ($conn->connect_error) {
@@ -47,7 +38,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>LISTAR ESTOQUE - ANP</title>
+    <title>LISTAR TODOS - ANP</title>
     <style>
         body { 
             font-family: Arial, sans-serif;
@@ -222,9 +213,8 @@
 <body>
     <!--<div class="faixa-inclinada"></div>-->
     <header>
-        <h1>LISTA DE ESTOQUE - ANP</h1>
-
-        <button onclick="window.location.href='listar_tudo_estoque.php'">Todos</button>
+        <h1>LISTA TODOS - ANP</h1>
+        
         <button onclick="window.location.href='formulario_estoque.php'">Adicionar</button>
         <button class="limpar" id="limparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
 
@@ -272,31 +262,34 @@
         <tr class="tabela-header">
                 <th>ID</th>
                 <th>user_ID</th>
+                <th>Usuário</th>
                 <th>Posto</th>
                 <th>Produto</th>
                 <th>Estoque do Sistema</th>
                 <th>Estoque Físico</th>
                 <th>Diferença</th>
                 <th>Data</th>
-                <th>Ações</th>
+                
         </tr>
     </thead>
     <tbody>
-        <?php if ($result_estoque->num_rows > 0): ?>
-            <?php while($row = $result_estoque->fetch_assoc()): ?>
+        <?php if ($result->num_rows > 0): ?>
+            <?php while($row = $result->fetch_assoc()): ?>
                 <tr>
                     <td><?= $row['id'] ?></td>
                     <td><?= $row['user_id'] ?></td>
+                    <td><?= htmlspecialchars($row['nome']) ?></td>
                     <td><?= htmlspecialchars($row['posto']) ?></td>
                     <td><?= htmlspecialchars($row['produto']) ?></td>
                     <td><?= $row['estoque_sistema'] ?></td>
                     <td><?= $row['estoque_fisico'] ?></td>
                     <td><?= $row['diferenca'] ?></td>
                     <td><?= $row['data_venda'] ?></td>
-                    <td>
+                    <!--<td>
                         <a href="editar_estoque.php?id=<?= $row['id'] ?>" class="btn btn-editar">Editar</a>
                         <a href="excluir_estoque.php?id=<?= $row['id'] ?>" class="btn btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este item?')">Excluir</a>
-                    </td>
+                        
+                    </td>-->
                 </tr>
             <?php endwhile; ?>
         <?php else: ?>
@@ -326,7 +319,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[7]; // coluna "Data"
+                const td = tr[i].getElementsByTagName('td')[8]; // coluna "Data"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -343,7 +336,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[3]; // coluna "Nome"
+                const td = tr[i].getElementsByTagName('td')[4]; // coluna "Nome"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -361,7 +354,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Posto"
+                const td = tr[i].getElementsByTagName('td')[3]; // coluna "Posto"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {

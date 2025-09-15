@@ -2,9 +2,10 @@
         session_start();
         include_once('conexao.php');
         
-         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha']) || !isset($_SESSION['user_id'])) {
                 unset($_SESSION['nome']);
                 unset($_SESSION['senha']);
+                unset($_SESSION['user_id']);
                 header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
                 exit();  // Importante adicionar o exit() após o redirecionamento
             }
@@ -13,14 +14,17 @@
 
             $nome = $_SESSION['nome'];
             $user_id = $_SESSION['user_id'];
-            
-            // Criar conexão
-            $conn = new mysqli($servername, $username, $password, $dbname);
 
-            // Verificar conexão
-            if ($conn->connect_error) {
-                die("Falha na conexão: " . $conn->connect_error);
-            }
+            // Consultar as entradas realizadas no dia atual para o usuário logado
+            $sql_entradas = "SELECT * FROM entradas WHERE user_id = ? ORDER BY id DESC";
+            $stmt = $conn->prepare($sql_entradas);
+            //$data_atual = date('Y-m-d');        // data atual no formato YYYY-MM-DD
+            
+            $stmt->bind_param('i', $user_id); 
+            $stmt->execute();
+            $result_entradas = $stmt->get_result();
+
+            
 
             // Consultar as entradas
             $sql = "SELECT * FROM entradas ORDER BY id DESC";
@@ -197,7 +201,7 @@
 <body>
      <header>
         <h1>LISTA DE ENTRADAS - ANP</h1>
-
+        <button onclick="window.location.href='listar_todas_entradas.php'">Tudo</button>
         <button onclick="window.location.href='formulario_entradas.php'">Adicionar</button>
         <button class="limpar" id="limparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
 
@@ -243,6 +247,7 @@
         <thead>
             <tr class="tabela-header">
                 <th>ID</th>
+                <th>User ID</th>
                 <th>Posto</th>
                 <th>Produto</th>
                 <th>Quantidade</th>
@@ -253,10 +258,11 @@
         <tbody>
             <?php
 
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+            if ($result_entradas->num_rows > 0) {
+                while($row = $result_entradas->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . $row['id'] . "</td>";
+                    echo "<td>" . $row['user_id'] . "</td>";
                     echo "<td>" . $row['posto'] . "</td>";
                     echo "<td>" . $row['produto'] . "</td>";
                     echo "<td>" . $row['quantidade'] . "</td>";
@@ -296,7 +302,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[4]; // coluna "Data"
+                const td = tr[i].getElementsByTagName('td')[5]; // coluna "Data"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -313,7 +319,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Nome"
+                const td = tr[i].getElementsByTagName('td')[3]; // coluna "Nome"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -330,7 +336,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[1]; // coluna "Posto"
+                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Posto"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
