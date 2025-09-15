@@ -5,32 +5,20 @@
          if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
           unset($_SESSION['nome']);
           unset($_SESSION['senha']);
-          header('Location: index.php');
+          header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
           exit();  // Importante adicionar o exit() após o redirecionamento
         }
+       $user_id = $_SESSION['user_id']; // Recupera o user_id da sessão
 
-          //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
-      /* Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
-        if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
-          unset($_SESSION['nome']);
-          unset($_SESSION['senha']);
-          header('Location: index.php');
-          exit();  // Importante adicionar o exit() após o redirecionamento
+       $nome = $_SESSION['nome'];
+       $user_id = $_SESSION['user_id'];
+        // Criar conexão
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Verificar conexão
+        if ($conn->connect_error) {
+            die("Falha na conexão: " . $conn->connect_error);
         }
-      */
-    /* Configurações do banco de dados
-        $servername = "localhost"; // Ou o IP do servidor
-        $username = "root"; // Usuário do MySQL
-        $password = ""; // Senha do MySQL
-        $dbname = "estoque_anp"; // Nome do banco de dados
-    */
-    // Criar conexão
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Verificar conexão
-    if ($conn->connect_error) {
-        die("Falha na conexão: " . $conn->connect_error);
-    }
 
     
 
@@ -264,6 +252,9 @@
 
             <input class="submit" type="submit" value="Enviar">
       </form>
+
+        <p style="color:white">Nome: <?php echo $nome; ?></p>
+        <p style="color:white">ID: <?php echo $user_id; ?></p>
 
       <script>
         // Captura todos os elementos de input, select e textarea

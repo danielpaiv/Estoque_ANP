@@ -1,8 +1,6 @@
 <?php
     session_start();
 
-    include_once('conexao.php');
-
     if (isset($_POST['submit']) && !empty($_POST['nome']) && !empty($_POST['senha'])) {// Check if the form is submitted and fields are not empty
         include_once('config.php');
         $nome = $_POST['nome']; 
@@ -17,7 +15,7 @@
         if ($result->num_rows < 1) {// If no user found, unset session variables and redirect to login page
             unset($_SESSION['nome']);
             unset($_SESSION['senha']);
-            header('Location: index.php');
+            header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
         } else {
             $user_data = $result->fetch_assoc();
             $_SESSION['user_id'] = $user_data['id']; // Armazena o user_id na sessão

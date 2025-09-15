@@ -1,44 +1,33 @@
 <?php
-   session_start();
-        include_once('conexao.php');
+  session_start();
+     include_once('conexao.php');
         
-         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
-        unset($_SESSION['nome']);
-        unset($_SESSION['senha']);
-        header('Location: index.php');
-        exit();  // Importante adicionar o exit() após o redirecionamento
-    }
-
-     //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
-    /* Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
     if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
-        unset($_SESSION['nome']);
-        unset($_SESSION['senha']);
-        header('Location: index.php');
-        exit();  // Importante adicionar o exit() após o redirecionamento
+      unset($_SESSION['nome']);
+      unset($_SESSION['senha']);
+      header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
+      exit();  // Importante adicionar o exit() após o redirecionamento
     }
-        */
-  // Configurações do banco de dados
-  /*$servername = "localhost"; // Ou o IP do servidor
-  $username = "root"; // Usuário do MySQL
-  $password = ""; // Senha do MySQL
-  $dbname = "estoque_anp"; // Nome do banco de dados*/
+    $user_id = $_SESSION['user_id']; // Recupera o user_id da sessão
 
-  // Criar conexão
-  $conn = new mysqli($servername, $username, $password, $dbname);
+      $nome = $_SESSION['nome'];
+      $user_id = $_SESSION['user_id'];
+    
+    // Criar conexão
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-  // Verificar conexão
-  if ($conn->connect_error) {
-      die("Falha na conexão: " . $conn->connect_error);
-  }
+    // Verificar conexão
+    if ($conn->connect_error) {
+        die("Falha na conexão: " . $conn->connect_error);
+    }
 
-  // Consultar os produtos no estoque
-  $sql_produtos = "SELECT id, produto FROM produtos";
-  $result_produtos = $conn->query($sql_produtos);
+    // Consultar os produtos no estoque
+    $sql_produtos = "SELECT id, produto FROM produtos";
+    $result_produtos = $conn->query($sql_produtos);
 
-  // Consultar os postos na tabela postos
-  $sql_postos = "SELECT id, posto FROM postos";
-  $result_postos = $conn->query($sql_postos);
+    // Consultar os postos na tabela postos
+    $sql_postos = "SELECT id, posto FROM postos";
+    $result_postos = $conn->query($sql_postos);
 ?>
 
 <!DOCTYPE html>
@@ -220,6 +209,8 @@
 </head>
 <body>
     <div class="faixa-inclinada"></div>
+
+    
   
     <h1>CADASTRO DE ESTOQUE - ANP</h1>
     <button onclick="window.location.href='sair.php'">Sair ↩</button>
@@ -269,6 +260,10 @@
 
     <input class="submit" type="submit" value="Cadastrar">
   </form>
+
+  <p style="color:white">Nome: <?php echo $nome; ?></p>
+  <p style="color:white">ID: <?php echo $user_id; ?></p>
+
     <script>
       // Captura todos os elementos de input, select e textarea
       const inputs = document.querySelectorAll("input, select, textarea");

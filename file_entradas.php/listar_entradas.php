@@ -5,24 +5,15 @@
          if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
                 unset($_SESSION['nome']);
                 unset($_SESSION['senha']);
-                header('Location: index.php');
+                header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
                 exit();  // Importante adicionar o exit() após o redirecionamento
             }
 
-            //esse codigo é responsável por criptografar a pagina viinculado ao codigo teste login.
-            // Verificar se as variáveis de sessão 'email' e 'senha' não estão definidas
-            if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
-                unset($_SESSION['nome']);
-                unset($_SESSION['senha']);
-                header('Location: index.php');
-                exit();  // Importante adicionar o exit() após o redirecionamento
-            }
-            /* Configurações do banco de dados
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $dbname = "estoque_anp";
-            */
+            $user_id = $_SESSION['user_id']; // Recupera o user_id da sessão
+
+            $nome = $_SESSION['nome'];
+            $user_id = $_SESSION['user_id'];
+            
             // Criar conexão
             $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -281,6 +272,9 @@
             ?>
         </tbody>
     </table>
+
+        <p style="color:white">Nome: <?php echo $nome; ?></p>
+        <p style="color:white">ID: <?php echo $user_id; ?></p>
 
     <script>
 

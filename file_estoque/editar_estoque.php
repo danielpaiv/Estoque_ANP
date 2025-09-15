@@ -1,10 +1,25 @@
 <?php
-      $servername = "localhost";
-      $username = "root";
-      $password = "";
-      $dbname = "estoque_anp";
-      $conn = new mysqli($servername, $username, $password, $dbname);
-      if ($conn->connect_error) { die("Falha na conexão: " . $conn->connect_error); }
+      session_start();
+        include_once('conexao.php');
+        
+         if (!isset($_SESSION['nome']) || !isset($_SESSION['senha'])) {
+                unset($_SESSION['nome']);
+                unset($_SESSION['senha']);
+                header('Location: http://localhost/controle_combustivel/estoque_ANP/index.php');
+                exit();  // Importante adicionar o exit() após o redirecionamento
+            }
+
+            $user_id = $_SESSION['user_id']; // Recupera o user_id da sessão
+            $nome = $_SESSION['nome'];
+            $user_id = $_SESSION['user_id'];
+            
+            // Criar conexão
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            // Verificar conexão
+            if ($conn->connect_error) {
+                die("Falha na conexão: " . $conn->connect_error);
+            }
 
       $id = intval($_GET['id']);
 
@@ -253,6 +268,9 @@
   <button type="submit" onclick="return confirm('Produto alterado com sucesso!')">Salvar Alterações</button>
 </form>
 
+      <p style="color:white">Nome: <?php echo $nome; ?></p>
+      <p style="color:white">ID: <?php echo $user_id; ?></p>
+      
     <script>
       // Captura todos os elementos de input, select e textarea
       const inputs = document.querySelectorAll("input, select, textarea");
