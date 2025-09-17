@@ -31,6 +31,10 @@
             $sql_postos = "SELECT id, posto FROM postos";
             $result_postos = $conn->query($sql_postos);
 
+            // Consultar os produtos no estoque
+            $sql_usuarios = "SELECT id, nome FROM usuarios";
+            $result_usuarios = $conn->query($sql_usuarios);
+
 
 ?>
 
@@ -213,10 +217,24 @@
 <body>
     <!--<div class="faixa-inclinada"></div>-->
     <header>
-        <h1>LISTA TODOS - ANP</h1>
-        
+        <h1>LISTAR TODOS - ANP</h1>
+        <button onclick="window.location.href='listar_estoque.php'">Voltar</button>
         <button onclick="window.location.href='formulario_estoque.php'">Adicionar</button>
         <button class="limpar" id="limparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
+
+         <label for="usuario"></label>
+        <select  id="filtroUsuario" class="filtro-servicos" onchange="filtrarUsuario()" name="nome" required autofocus>
+                  <option value="">Usuário</option>
+                  <?php
+                  if ($result_usuarios && $result_usuarios->num_rows > 0) {
+                      while($row = $result_usuarios->fetch_assoc()) {
+                          echo "<option value='" . $row['nome'] . "'>" . $row['nome'] . "</option>";
+                      }
+                  } else {
+                      echo "<option value=''>Nenhum usuário encontrado</option>";
+                  }
+                  ?>
+        </select>
 
         <label for="dataFiltro">Filtrar Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
         <input type="date" id="dataFiltro" value="<?php echo date('Y-m-d'); ?>"oninput="filtrarData()" >
@@ -235,8 +253,8 @@
                 ?>
         </select>
 
-        <label for="filtroNome">Filtrar Produto:</label>
-        <select id="filtroNome" class="filtro-servicos" onchange="filtrarPorNome()">
+        <label for="filtroProduto">Filtrar Produto:</label>
+        <select id="filtroProduto" class="filtro-servicos" onchange="filtrarPorProduto()">
             <option value="">Todos</option>
             <?php
                 if ($result_produtos && $result_produtos->num_rows > 0) {
@@ -297,7 +315,7 @@
         <?php endif; ?>
     </tbody>
 </table>
-<p style="color:white">Nome: <?php echo $nome; ?></p>
+<p style="color:white">Usuário: <?php echo $nome; ?></p>
 <p style="color:white">ID: <?php echo $user_id; ?></p>
 <script>
 
@@ -306,13 +324,34 @@
             const button = document.getElementById('limparFiltros');
             const tr = table.getElementsByTagName('tr');
             document.getElementById('dataFiltro').value = '';
-            document.getElementById('filtroNome').value = '';
+            document.getElementById('filtroProduto').value = '';
             document.getElementById('filtroPosto').value = '';
+            document.getElementById('filtroUsuario').value = '';
             filtrarData();
-            filtrarPorNome();
+            filtrarPorProduto();
             filtrarPorPosto();
+            filtrarUsuario();
 
         }
+
+         function filtrarUsuario() {
+            const input = document.getElementById('filtroUsuario');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('clientesTabela');
+            const tr = table.getElementsByTagName('tr');
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Usuário"
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
         function filtrarData() {
             const input = document.getElementById('dataFiltro');
             const filter = input.value.toLowerCase();
@@ -330,8 +369,8 @@
                 }
             }
         }
-        function filtrarPorNome() {
-            const input = document.getElementById('filtroNome');
+        function filtrarPorProduto() {
+            const input = document.getElementById('filtroProduto');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');

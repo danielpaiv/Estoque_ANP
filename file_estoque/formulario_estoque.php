@@ -261,7 +261,7 @@
     <input class="submit" type="submit" value="Cadastrar">
   </form>
 
-  <p style="color:white">Nome: <?php echo $nome; ?></p>
+  <p style="color:white">Usuario: <?php echo $nome; ?></p>
   <p style="color:white">ID: <?php echo $user_id; ?></p>
 
     <script>

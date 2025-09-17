@@ -27,6 +27,10 @@
             $sql_postos = "SELECT id, posto FROM postos";
             $result_postos = $conn->query($sql_postos);
 
+            // Consultar os produtos no estoque
+            $sql_usuarios = "SELECT id, nome FROM usuarios";
+            $result_usuarios = $conn->query($sql_usuarios);
+
              // Fechar conexão
             $conn->close();
 ?>
@@ -36,7 +40,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LISTAR ESNTRADAS - ANP</title>
+    <title>LISTAR TODAS - ANP</title>
     <style>
         body { 
             font-family: Arial, sans-serif;
@@ -189,13 +193,29 @@
 </head>
 <body>
      <header>
-        <h1>LISTA DE ENTRADAS - ANP</h1>
-
+        <h1>LISTAR TODAS - ANP</h1>
+        <button onclick="window.location.href='listar_entradas.php'">Voltar</button>
         <button onclick="window.location.href='formulario_entradas.php'">Adicionar</button>
         <button class="limpar" id="limparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
 
+          <label for="usuario"></label>
+        <select  id="filtroUsuario" class="filtro-servicos" onchange="filtrarUsuario()" name="nome" required autofocus>
+                  <option value="">Usuário</option>
+                  <?php
+                  if ($result_usuarios && $result_usuarios->num_rows > 0) {
+                      while($row = $result_usuarios->fetch_assoc()) {
+                          echo "<option value='" . $row['nome'] . "'>" . $row['nome'] . "</option>";
+                      }
+                  } else {
+                      echo "<option value=''>Nenhum usuário encontrado</option>";
+                  }
+                  ?>
+        </select>
+
         <label for="dataFiltro">Filtrar por Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
         <input type="date" id="dataFiltro" value="<?php echo date('Y-m-d'); ?>" oninput="filtrarData()">
+
+       
 
         <label for="filtroPosto">Filtrar por Posto:</label>
         <select id="filtroPosto" class="filtro-servicos" onchange="filtrarPorPosto()">
@@ -270,7 +290,7 @@
         </tbody>
     </table>
 
-        <p style="color:white">Nome: <?php echo $nome; ?></p>
+        <p style="color:white">Usuário: <?php echo $nome; ?></p>
         <p style="color:white">ID: <?php echo $user_id; ?></p>
 
     <script>
@@ -282,11 +302,32 @@
             document.getElementById('dataFiltro').value = '';
             document.getElementById('filtroNome').value = '';
             document.getElementById('filtroPosto').value = '';
+            document.getElementById('filtroUsuario').value = '';
             filtrarData();
             filtrarPorNome();
             filtrarPorPosto();
+            filtrarUsuario();
 
         }
+
+         function filtrarUsuario() {
+            const input = document.getElementById('filtroUsuario');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('clientesTabela');
+            const tr = table.getElementsByTagName('tr');
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Usuário"
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
         function filtrarData() {
             const input = document.getElementById('dataFiltro');
             const filter = input.value.toLowerCase();

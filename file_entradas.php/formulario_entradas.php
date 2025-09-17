@@ -253,7 +253,7 @@
             <input class="submit" type="submit" value="Enviar">
       </form>
 
-        <p style="color:white">Nome: <?php echo $nome; ?></p>
+        <p style="color:white">Usuário: <?php echo $nome; ?></p>
         <p style="color:white">ID: <?php echo $user_id; ?></p>
 
       <script>

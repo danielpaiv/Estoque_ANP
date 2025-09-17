@@ -304,7 +304,7 @@
         <?php endif; ?>
     </tbody>
 </table>
-<p style="color:white">Nome: <?php echo $nome; ?></p>
+<p style="color:white">Usuário: <?php echo $nome; ?></p>
 <p style="color:white">ID: <?php echo $user_id; ?></p>
 <script>
 
