@@ -122,7 +122,7 @@
       left: 0;/* Ajusta a posição para o fundo */
       width: 100%;/* Preenche toda a largura da tela */
       height: 70%;/* Preenche 70% da altura da tela */
-      background: linear-gradient(to bottom, #0a1b7e, #0080ff);/* Cria um gradiente azul */
+      background: linear-gradient(to bottom, #b10e0eff, #0080ff);/* Cria um gradiente azul */
       position: absolute;/* Coloca a faixa atrás do conteúdo principal */
       background-color: #0038a0;
       clip-path: polygon(0 25%, 100% 0%, 100% 100%, 0% 100%);/* Inclinada para baixo */

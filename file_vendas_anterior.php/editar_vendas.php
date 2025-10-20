@@ -27,27 +27,26 @@
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           $posto = $_POST['posto'];
           $produto = $_POST['produto'];
-          $estoque_sistema = $_POST['estoque_sistema'];
-          $estoque_fisico = $_POST['estoque_fisico'];
+          $quantidade = $_POST['quantidade'];
           $data_venda = $_POST['data_venda'];
 
-          $stmt = $conn->prepare("UPDATE estoque SET posto=?, produto=?, estoque_sistema=?, estoque_fisico=?, data_venda=? WHERE id=?");
-          $stmt->bind_param("ssiisi", $posto, $produto, $estoque_sistema, $estoque_fisico, $data_venda, $id);
+          $stmt = $conn->prepare("UPDATE vendas SET posto=?, produto=?, quantidade=?, data_venda=? WHERE id=?");
+          $stmt->bind_param("ssisi", $posto, $produto, $quantidade, $data_venda, $id);
           $stmt->execute();
           $stmt->close();
 
-          header("Location: listar_estoque.php");
+          header("Location: listar_vendas.php");
           exit;
       }
 
       // Buscar dados atuais
-      $result = $conn->query("SELECT * FROM estoque WHERE id=$id");
+      $result = $conn->query("SELECT * FROM vendas WHERE id=$id");
       $produto = $estoque_sistema = $estoque_fisico = $data_venda = "";
       if ($row = $result->fetch_assoc()) {
           $posto = $row['posto'];
           $produto = $row['produto'];
-          $estoque_sistema = $row['estoque_sistema'];
-          $estoque_fisico = $row['estoque_fisico'];
+          $quantidade = $row['quantidade'];
+         
           $data_venda = $row['data_venda'];
       }
 
@@ -221,7 +220,7 @@
 </head>
 <body>
 <div class="faixa-inclinada"></div>
-<button onclick="window.location.href='listar_estoque.php'">Voltar</button>
+<button onclick="window.location.href='formulario_vendas_dia_anterior.php'">Voltar</button>
 
 <center><h1>EDITAR ESTOQUE - ANP</h1></center>
 
@@ -256,11 +255,8 @@
           ?>
       </select>
 
-  <label>Estoque do Sistema:</label>
-  <input type="number" name="estoque_sistema" value="<?= $estoque_sistema ?>" required>
-
-  <label>Estoque Físico:</label>
-  <input type="number" name="estoque_fisico" value="<?= $estoque_fisico ?>" required>
+  <label>Quantidade:</label>
+  <input type="number" name="quantidade" value="<?= $quantidade ?>" required
 
   <label>Data:</label>
   <input type="date" name="data_venda" value="<?= $data_venda ?>" required>

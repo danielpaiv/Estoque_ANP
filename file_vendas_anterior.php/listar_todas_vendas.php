@@ -15,19 +15,8 @@
             $nome = $_SESSION['nome'];
             $user_id = $_SESSION['user_id'];
 
-            // Consultar as entradas realizadas no dia atual para o usuário logado
-            $sql_entradas = "SELECT * FROM entradas WHERE user_id = ? ORDER BY id DESC";
-            $stmt = $conn->prepare($sql_entradas);
-            //$data_atual = date('Y-m-d');        // data atual no formato YYYY-MM-DD
-            
-            $stmt->bind_param('i', $user_id); 
-            $stmt->execute();
-            $result_entradas = $stmt->get_result();
-
-            
-
             // Consultar as entradas
-            $sql = "SELECT * FROM entradas ORDER BY id DESC";
+            $sql = "SELECT * FROM vendas ORDER BY id DESC";
             $result = $conn->query($sql);
 
             // Consultar os produtos no estoque
@@ -38,6 +27,10 @@
             $sql_postos = "SELECT id, posto FROM postos";
             $result_postos = $conn->query($sql_postos);
 
+            // Consultar os produtos no estoque
+            $sql_usuarios = "SELECT id, nome FROM usuarios";
+            $result_usuarios = $conn->query($sql_usuarios);
+
              // Fechar conexão
             $conn->close();
 ?>
@@ -47,7 +40,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LISTAR ESNTRADAS - ANP</title>
+    <title>LISTAR TODAS - ANP</title>
     <style>
         body { 
             font-family: Arial, sans-serif;
@@ -161,18 +154,6 @@
             color: white;
             z-index: 10; /* Mantém sobre as linhas */
         }
-        #tabela-soma {
-            margin-top: 20px;
-            width: 50%;
-            border-collapse: collapse;
-        }
-        .tabela-soma th {
-            background: #000000;
-            color: white;
-            text-align: center;
-            width: 5%;
-            top: 155px; /* Ajuste conforme o layout */
-        }
         .limpar{
              margin-left: 10px; 
              padding: 5px; 
@@ -212,13 +193,29 @@
 </head>
 <body>
      <header>
-        <h1>LISTA DE ENTRADAS - ANP</h1>
-        <button onclick="window.location.href='listar_todas_entradas.php'">Tudo</button>
-        <button onclick="window.location.href='formulario_entradas.php'">Adicionar</button>
+        <h1>LISTAR TODAS - ANP</h1>
+        <button onclick="window.location.href='listar_vendas.php'">Voltar</button>
+        <button onclick="window.location.href='formulario_vendas_dia_anterior.php'">Adicionar</button>
         <button class="limpar" id="limparFiltros" onclick="limparFiltros()">Limpar Filtros</button>
+
+          <label for="usuario"></label>
+        <select  id="filtroUsuario" class="filtro-servicos" onchange="filtrarUsuario()" name="nome" required autofocus>
+                  <option value="">Usuário</option>
+                  <?php
+                  if ($result_usuarios && $result_usuarios->num_rows > 0) {
+                      while($row = $result_usuarios->fetch_assoc()) {
+                          echo "<option value='" . $row['nome'] . "'>" . $row['nome'] . "</option>";
+                      }
+                  } else {
+                      echo "<option value=''>Nenhum usuário encontrado</option>";
+                  }
+                  ?>
+        </select>
 
         <label for="dataFiltro">Filtrar por Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
         <input type="date" id="dataFiltro" value="<?php echo date('Y-m-d'); ?>" oninput="filtrarData()">
+
+       
 
         <label for="filtroPosto">Filtrar por Posto:</label>
         <select id="filtroPosto" class="filtro-servicos" onchange="filtrarPorPosto()">
@@ -260,26 +257,28 @@
             <tr class="tabela-header">
                 <th>ID</th>
                 <th>User ID</th>
+                <th>Usuário</th>
                 <th>Posto</th>
                 <th>Produto</th>
                 <th>Quantidade</th>
-                <th>Data de Entrada</th>
-                <th>Ações</th>
+                <th>Data venda</th>
+                
             </tr>
         </thead>
         <tbody>
             <?php
 
-            if ($result_entradas->num_rows > 0) {
-                while($row = $result_entradas->fetch_assoc()) {
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . $row['id'] . "</td>";
                     echo "<td>" . $row['user_id'] . "</td>";
+                    echo "<td>" . $row['nome'] . "</td>";
                     echo "<td>" . $row['posto'] . "</td>";
                     echo "<td>" . $row['produto'] . "</td>";
                     echo "<td>" . $row['quantidade'] . "</td>";
-                    echo "<td>" . $row['data_entrada'] . "</td>";
-                    echo "<td><a href='editar_entradas.php?id=" . $row['id'] . "' class='btn-editar'>Editar</a> <a href='excluir_entradas.php?id=" . $row['id'] . "' class='btn-excluir'onclick=\"return confirm('Tem certeza que deseja excluir este item?')\">Excluir</a></td>";
+                    echo "<td>" . $row['data_venda'] . "</td>";
+                    //echo "<td><a href='editar_entradas.php?id=" . $row['id'] . "' class='btn-editar'>Editar</a> <a href='excluir_entradas.php?id=" . $row['id'] . "' class='btn-excluir'onclick=\"return confirm('Tem certeza que deseja excluir este item?')\">Excluir</a></td>";
                     echo "</tr>";
                 }
             } else {
@@ -289,11 +288,9 @@
            
             ?>
         </tbody>
-       
-    </table>
-    <table id="tabela-soma">
-         <thead>
-            <tr class="tabela-soma">
+        
+        <thead>
+            <tr>
                 <th style="background-color: #d32f2f; color: white;">GASOLINA COMUM</th>
                 <th style="background-color: #1565c0; color: white;">GASOLINA DURA MAIS</th>
                 <th style="background-color: #2e7d32; color: white;">ETANOL</th>
@@ -301,6 +298,79 @@
             </tr>
         </thead>
          <tbody>
+            <tr>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_comum = "SELECT SUM(quantidade) AS total_gasolina_comum FROM vendas WHERE produto = 'GASOLINA COMUM'";
+                    $result_gasolina_comum = $conn->query($sql_gasolina_comum);
+                    $row_gasolina_comum = $result_gasolina_comum->fetch_assoc();
+                    echo $row_gasolina_comum['total_gasolina_comum'] ? $row_gasolina_comum['total_gasolina_comum'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_dura_mais = "SELECT SUM(quantidade) AS total_gasolina_dura_mais FROM vendas WHERE produto = 'GASOLINA DURA MAIS'";
+                    $result_gasolina_dura_mais = $conn->query($sql_gasolina_dura_mais);
+                    $row_gasolina_dura_mais = $result_gasolina_dura_mais->fetch_assoc();
+                    echo $row_gasolina_dura_mais['total_gasolina_dura_mais'] ? $row_gasolina_dura_mais['total_gasolina_dura_mais'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_etanol = "SELECT SUM(quantidade) AS total_etanol FROM vendas WHERE produto = 'ETANOL'";
+                    $result_etanol = $conn->query($sql_etanol);
+                    $row_etanol = $result_etanol->fetch_assoc();
+                    echo $row_etanol['total_etanol'] ? $row_etanol['total_etanol'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_diesel_s10 = "SELECT SUM(quantidade) AS total_diesel_s10 FROM vendas WHERE produto = 'DIESEL S10'";
+                    $result_diesel_s10 = $conn->query($sql_diesel_s10);
+                    $row_diesel_s10 = $result_diesel_s10->fetch_assoc();
+                    echo $row_diesel_s10['total_diesel_s10'] ? $row_diesel_s10['total_diesel_s10'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!--<table>
+        <thead>
+            <tr>
+                <th style="background-color: #d32f2f; color: white;">GASOLINA COMUM</th>
+                <th style="background-color: #1565c0; color: white;">GASOLINA DURA MAIS</th>
+                <th style="background-color: #2e7d32; color: white;">ETANOL</th>
+                <th style="background-color: #424242; color: white;">DIESEL S10</th>
+            </tr>
+        </thead>
+        
+        <tbody>
             <tr>
                 <td>
                     <?php
@@ -345,7 +415,6 @@
                     ?>
                 </td>
                 <td>
-                    
                     <?php
                     // Reabrir a conexão para a nova consulta
                     include('conexao.php');
@@ -361,8 +430,8 @@
                 </td>
             </tr>
         </tbody>
-    </table>
-
+        </table>
+    -->
         <p style="color:white">Usuário: <?php echo $nome; ?></p>
         <p style="color:white">ID: <?php echo $user_id; ?></p>
 
@@ -375,18 +444,39 @@
             document.getElementById('dataFiltro').value = '';
             document.getElementById('filtroNome').value = '';
             document.getElementById('filtroPosto').value = '';
+            document.getElementById('filtroUsuario').value = '';
             filtrarData();
             filtrarPorNome();
             filtrarPorPosto();
+            filtrarUsuario();
 
         }
+
+         function filtrarUsuario() {
+            const input = document.getElementById('filtroUsuario');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('clientesTabela');
+            const tr = table.getElementsByTagName('tr');
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Usuário"
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
         function filtrarData() {
             const input = document.getElementById('dataFiltro');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[5]; // coluna "Data"
+                const td = tr[i].getElementsByTagName('td')[6]; // coluna "Data"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -403,7 +493,7 @@
             const table = document.getElementById('clientesTabela');
             const tr = table.getElementsByTagName('tr');
             for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[3]; // coluna "Nome"
+                const td = tr[i].getElementsByTagName('td')[4]; // coluna "Nome"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
@@ -414,23 +504,23 @@
                 }
             }
         }
-        function filtrarPorPosto() {
-            const input = document.getElementById('filtroPosto');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('clientesTabela');
-            const tr = table.getElementsByTagName('tr');
-            for (let i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName('td')[2]; // coluna "Posto"
+       function filtrarPorPosto() {
+    const input = document.getElementById('filtroPosto');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('clientesTabela');
+    const tr = table.getElementsByTagName('tr');
+    for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td')[3]; // coluna "Posto"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                    } else {
-                        tr[i].style.display = 'none';
-                    }
-                }
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
             }
         }
+    }
+}
 </script>
 </body>
 </html>

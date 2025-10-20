@@ -37,7 +37,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CADASTRO ENTRADAS - ANP</title>
+    <title>VENDAS DIA ANTERIOR - ANP</title>
 </head>
   <style>
     body {
@@ -119,10 +119,10 @@
     select:hover {
       background: #218838;
     }
-    #data_entrada:hover {
+    #data_venda:hover {
       background: #218838;
     }
-    #data_entrada {
+    #data_venda {
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -194,7 +194,7 @@
       left: 0;/* Ajusta a posição para o fundo */
       width: 100%;/* Preenche toda a largura da tela */
       height: 70%;/* Preenche 70% da altura da tela */
-      background: linear-gradient(to bottom, #0a7e3aff, #0080ff);/* Cria um gradiente azul */
+      background: linear-gradient(to bottom, #cab22bff, #0080ff);/* Cria um gradiente azul */
       position: absolute;/* Coloca a faixa atrás do conteúdo principal */
       background-color: #0038a0;
       clip-path: polygon(0 25%, 100% 0%, 100% 100%, 0% 100%);/* Inclinada para baixo */
@@ -205,15 +205,15 @@
   </style>
     <body>
       <div class="faixa-inclinada"></div>
-      <h1>CADASTRO DE ENTRADAS - ANP</h1>
+      <h1>VENDAS DIA ANTERIOR - ANP</h1>
 
       <button onclick="window.location.href='sair.php'">Sair ↩</button>
       <button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_estoque/listar_estoque.php'">Estoque </button>
-      <button onclick="window.location.href='listar_entradas.php'">Entradas </button>
-      <button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_vendas_anterior.php/formulario_vendas_dia_anterior.php'">Vendas dia anterior </button>
+      <button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_entradas.php/listar_entradas.php'">Entradas </button>
+     <!--<button onclick="window.location.href='http://localhost/controle_combustivel/estoque_ANP/file_estoque/formulario_estoque.php'">Adicionar Estoque </button>-->
+      <button onclick="window.location.href='listar_vendas.php'">Vendas</button>
 
-
-      <form  action="salvar_entradas.php"  method="POST" >
+      <form  action="salvar_vendas.php"  method="POST" >
 
           <label for="posto">Posto:</label>
           <select  id="posto" class="posto" name="posto" required autofocus>
@@ -247,8 +247,8 @@
             <label for="quantidade">Quantidade:</label>
             <input type="number" id="quantidade" name="quantidade" required>
 
-            <label for="data_entrada">Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
-            <input type="date" id="data_entrada" name="data_entrada" value="<?php echo date('Y-m-d'); ?>" required>
+            <label for="data_venda">Data:</label><?php date_default_timezone_set('America/Sao_Paulo'); ?>
+            <input type="date" id="data_venda" name="data_venda" value="<?php echo date('Y-m-d'); ?>" required>
 
             <input class="submit" type="submit" value="Enviar">
       </form>

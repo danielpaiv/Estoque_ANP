@@ -288,8 +288,150 @@
            
             ?>
         </tbody>
+        
+        <thead>
+            <tr>
+                <th style="background-color: #d32f2f; color: white;">GASOLINA COMUM</th>
+                <th style="background-color: #1565c0; color: white;">GASOLINA DURA MAIS</th>
+                <th style="background-color: #2e7d32; color: white;">ETANOL</th>
+                <th style="background-color: #424242; color: white;">DIESEL S10</th>
+            </tr>
+        </thead>
+         <tbody>
+            <tr>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_comum = "SELECT SUM(quantidade) AS total_gasolina_comum FROM entradas WHERE produto = 'GASOLINA COMUM'";
+                    $result_gasolina_comum = $conn->query($sql_gasolina_comum);
+                    $row_gasolina_comum = $result_gasolina_comum->fetch_assoc();
+                    echo $row_gasolina_comum['total_gasolina_comum'] ? $row_gasolina_comum['total_gasolina_comum'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_dura_mais = "SELECT SUM(quantidade) AS total_gasolina_dura_mais FROM entradas WHERE produto = 'GASOLINA DURA MAIS'";
+                    $result_gasolina_dura_mais = $conn->query($sql_gasolina_dura_mais);
+                    $row_gasolina_dura_mais = $result_gasolina_dura_mais->fetch_assoc();
+                    echo $row_gasolina_dura_mais['total_gasolina_dura_mais'] ? $row_gasolina_dura_mais['total_gasolina_dura_mais'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_etanol = "SELECT SUM(quantidade) AS total_etanol FROM entradas WHERE produto = 'ETANOL'";
+                    $result_etanol = $conn->query($sql_etanol);
+                    $row_etanol = $result_etanol->fetch_assoc();
+                    echo $row_etanol['total_etanol'] ? $row_etanol['total_etanol'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_diesel_s10 = "SELECT SUM(quantidade) AS total_diesel_s10 FROM entradas WHERE produto = 'DIESEL S10'";
+                    $result_diesel_s10 = $conn->query($sql_diesel_s10);
+                    $row_diesel_s10 = $result_diesel_s10->fetch_assoc();
+                    echo $row_diesel_s10['total_diesel_s10'] ? $row_diesel_s10['total_diesel_s10'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
+    <!--<table>
+        <thead>
+            <tr>
+                <th style="background-color: #d32f2f; color: white;">GASOLINA COMUM</th>
+                <th style="background-color: #1565c0; color: white;">GASOLINA DURA MAIS</th>
+                <th style="background-color: #2e7d32; color: white;">ETANOL</th>
+                <th style="background-color: #424242; color: white;">DIESEL S10</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_comum = "SELECT SUM(quantidade) AS total_gasolina_comum FROM entradas WHERE produto = 'GASOLINA COMUM'";
+                    $result_gasolina_comum = $conn->query($sql_gasolina_comum);
+                    $row_gasolina_comum = $result_gasolina_comum->fetch_assoc();
+                    echo $row_gasolina_comum['total_gasolina_comum'] ? $row_gasolina_comum['total_gasolina_comum'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_gasolina_dura_mais = "SELECT SUM(quantidade) AS total_gasolina_dura_mais FROM entradas WHERE produto = 'GASOLINA DURA MAIS'";
+                    $result_gasolina_dura_mais = $conn->query($sql_gasolina_dura_mais);
+                    $row_gasolina_dura_mais = $result_gasolina_dura_mais->fetch_assoc();
+                    echo $row_gasolina_dura_mais['total_gasolina_dura_mais'] ? $row_gasolina_dura_mais['total_gasolina_dura_mais'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_etanol = "SELECT SUM(quantidade) AS total_etanol FROM entradas WHERE produto = 'ETANOL'";
+                    $result_etanol = $conn->query($sql_etanol);
+                    $row_etanol = $result_etanol->fetch_assoc();
+                    echo $row_etanol['total_etanol'] ? $row_etanol['total_etanol'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    // Reabrir a conexão para a nova consulta
+                    include('conexao.php');
+
+                    $sql_diesel_s10 = "SELECT SUM(quantidade) AS total_diesel_s10 FROM entradas WHERE produto = 'DIESEL S10'";
+                    $result_diesel_s10 = $conn->query($sql_diesel_s10);
+                    $row_diesel_s10 = $result_diesel_s10->fetch_assoc();
+                    echo $row_diesel_s10['total_diesel_s10'] ? $row_diesel_s10['total_diesel_s10'] . ' L' : '0 L';
+
+                    // Fechar a conexão
+                    $conn->close();
+                    ?>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    -->
         <p style="color:white">Usuário: <?php echo $nome; ?></p>
         <p style="color:white">ID: <?php echo $user_id; ?></p>
 
@@ -362,23 +504,23 @@
                 }
             }
         }
-        function filtrarPorPosto() {
-            const input = document.getElementById('filtroPosto');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('clientesTabela');
-            const tr = table.getElementsByTagName('tr');
-            for (let i = 1; i < tr.length; i++) {
+       function filtrarPorPosto() {
+    const input = document.getElementById('filtroPosto');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('clientesTabela');
+    const tr = table.getElementsByTagName('tr');
+    for (let i = 1; i < tr.length; i++) {
                 const td = tr[i].getElementsByTagName('td')[3]; // coluna "Posto"
                 if (td) {
                     const txtValue = td.textContent || td.innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                    } else {
-                        tr[i].style.display = 'none';
-                    }
-                }
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
             }
         }
+    }
+}
 </script>
 </body>
 </html>
