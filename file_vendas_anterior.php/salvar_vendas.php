@@ -20,12 +20,14 @@ $produto = $_POST['produto'];
 $quantidade = $_POST['quantidade'];
 $data_venda = $_POST['data_venda'];
 
+$quantidade = str_replace(',', '.', $quantidade);
+
 // Preparar e executar a inserção
 $sql = "INSERT INTO vendas ( nome, user_id, posto, produto, quantidade, data_venda)
         VALUES (?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sissis", $nome, $user_id, $posto, $produto, $quantidade, $data_venda);
+$stmt->bind_param("sissds", $nome, $user_id, $posto, $produto, $quantidade, $data_venda);
 
 if ($stmt->execute()) {
     echo "Produto cadastrado com sucesso!";

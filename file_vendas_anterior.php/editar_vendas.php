@@ -30,8 +30,10 @@
           $quantidade = $_POST['quantidade'];
           $data_venda = $_POST['data_venda'];
 
+          $quantidade = str_replace(',', '.', $quantidade);
+
           $stmt = $conn->prepare("UPDATE vendas SET posto=?, produto=?, quantidade=?, data_venda=? WHERE id=?");
-          $stmt->bind_param("ssisi", $posto, $produto, $quantidade, $data_venda, $id);
+          $stmt->bind_param("ssdsi", $posto, $produto, $quantidade, $data_venda, $id);
           $stmt->execute();
           $stmt->close();
 
@@ -65,7 +67,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>EDITAR ESTOQUE - ANP</title>
+<title>EDITAR VENDAS - ANP</title>
 <style>
   body {
     background: linear-gradient(to bottom, #0a1b7e, #0080ff);
@@ -222,7 +224,7 @@
 <div class="faixa-inclinada"></div>
 <button onclick="window.location.href='formulario_vendas_dia_anterior.php'">Voltar</button>
 
-<center><h1>EDITAR ESTOQUE - ANP</h1></center>
+<center><h1>EDITAR VENDAS - ANP</h1></center>
 
 
 <form method="POST">
@@ -256,7 +258,7 @@
       </select>
 
   <label>Quantidade:</label>
-  <input type="number" name="quantidade" value="<?= $quantidade ?>" required
+  <input type="number" name="quantidade" step="0.001" value="<?= $quantidade ?>" required
 
   <label>Data:</label>
   <input type="date" name="data_venda" value="<?= $data_venda ?>" required>
@@ -266,6 +268,13 @@
 
       <p style="color:white">Usuário: <?php echo $nome; ?></p>
       <p style="color:white">ID: <?php echo $user_id; ?></p>
+
+      <script>
+        document.getElementById('quantidade').addEventListener('blur', function() {
+          let val = parseFloat(this.value || 0).toFixed(2);
+          this.value = val;
+        });
+      </script>
       
     <script>
       // Captura todos os elementos de input, select e textarea
